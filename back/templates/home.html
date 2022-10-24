@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input id="1" type="text" />
+    <input id="2" type="text" />
+    <input id="3" type="text" />
+    <button type="button" id="4">send</button>
+    <div id="qw"></div>
+    <script>
+      document.getElementById('4').addEventListener('click', () => {
+        const a = document.getElementById('1').value;
+        const b = document.getElementById('2').value;
+        const c = document.getElementById('3').value;
+
+        console.log(a, b, c);
+        var payload = {
+          "id_user": 3,
+          "count_links": 4,
+          "count": 3
+        };
+        var data = new FormData();
+        data.append( "json", JSON.stringify( payload ) );
+
+        fetch(`http://localhost:5000/create_links`,{
+          method: "POST",
+          body: JSON.stringify({id_user: 7, count_links: 3, count: 3})
+        }).then((r) => {
+          if (r.ok) {
+            document.getElementById('qw').innerHTML = JSON.stringify(r);
+          } else {
+            document.getElementById('qw').innerHTML = 'some error';
+          }
+        });
+      });
+      document.getElementById('qw').innerHTML = 'Hello JavaScript!';
+    </script>
+  </body>
+</html>
