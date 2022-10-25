@@ -7,12 +7,15 @@
     <title>Document</title>
   </head>
   <body>
+    <label for="fname">user_id:</label>
     <input id="1" type="text" />
-    <label for="fname">user_id:</label><br>
+    <br />
+    <label for="fname">amount:</label>
     <input id="2" type="text" />
-    <label for="fname">amount:</label><br>
+    <br />
+    <label for="fname">count_links:</label>
     <input id="3" type="text" />
-    <label for="fname">count_links:</label><br>
+    <br />
     <button type="button" id="4">send</button>
     <div id="qw"></div>
     <script>
@@ -25,19 +28,22 @@
         // var data = new FormData();
         // data.append( "json", JSON.stringify( payload ) );
 
-        fetch('http://localhost:5000/create_links',{
-          method: "POST",
+        fetch('http://localhost:5000/create_links', {
+          method: 'POST',
           // headers: {
           //   'Access-Control-Allow-Origin': '*'
           // },
-          body: JSON.stringify({id_user: a, count_links: b, count: c})
-        }).then((r) => {
-            r.json().then((data)=>{
-              document.getElementById('qw').innerHTML = JSON.stringify(data);
-            })
-        }).catch((err) => {
-            document.getElementById('qw').innerHTML = 'some error'; 
-        });
+          body: JSON.stringify({ id_user: a, count_links: b, count: c }),
+        })
+          .then((r) => {
+            r.json().then((data) => {
+              const inner = data.map((d) => `<a href=${d.link}>${d.link}</a>`);
+              document.getElementById('qw').innerHTML = inner.join('<br/>');
+            });
+          })
+          .catch((err) => {
+            document.getElementById('qw').innerHTML = 'some error';
+          });
       });
       document.getElementById('qw').innerHTML = 'Hello JavaScript!';
     </script>
