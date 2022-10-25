@@ -1,67 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <label for="fname">user_id:</label>
-    <input id="1" type="text" />
-    <br />
-    <label for="fname">amount:</label>
-    <input id="2" type="text" />
-    <br />
-    <label for="fname">count_links:</label>
-    <input id="3" type="text" />
-    <br />
-    <button type="button" id="4">send</button>
-    <div id="qw"></div>
-    <button type="button" id="5">download</button>
-    <script>
-      let dataDow;
-      document.getElementById('5').addEventListener('click', () => {
-        const printToFile = () => {
-          const element = document.createElement('a');
-          const textFile = new Blob([JSON.stringify(dataDow)], {
-            type: 'json/aplication',
-          });
-          element.href = URL.createObjectURL(textFile);
-          element.download = 'data.json';
-          document.body.appendChild(element);
-          element.click();
-        };
-      });
 
-      document.getElementById('4').addEventListener('click', () => {
-        const a = document.getElementById('1').value;
-        const b = document.getElementById('2').value;
-        const c = document.getElementById('3').value;
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    a {
+      color:green;
+      text-decoration: none;
+    }
+  </style>
+</head>
 
-        console.log(a, b, c);
-        // var data = new FormData();
-        // data.append( "json", JSON.stringify( payload ) );
+<body>
+  <label for="fname">user_id:</label>
+  <input id="1" type="text" />
+  <br />
+  <label for="fname">amount:</label>
+  <input id="2" type="text" />
+  <br />
+  <label for="fname">count_links:</label>
+  <input id="3" type="text" />
+  <br />
+  <button type="button" id="4">send</button>
+  <div id="qw"></div>
+  <button type="button" id="5">download</button>
+  <script>
+    let dataDow;
 
-        fetch('http://localhost:5000/create_links', {
-          method: 'POST',
-          // headers: {
-          //   'Access-Control-Allow-Origin': '*'
-          // },
-          body: JSON.stringify({ id_user: a, count_links: b, count: c }),
-        })
-          .then((r) => {
-            r.json().then((data) => {
-              dataDow == data;
-              const inner = data.map((d) => `<a href=${d.Link}>${d.Link}</a>`);
-              document.getElementById('qw').innerHTML = inner.join('<br/>');
+
+    document.getElementById('4').addEventListener('click', () => {
+      const a = document.getElementById('1').value;
+      const b = document.getElementById('2').value;
+      const c = document.getElementById('3').value;
+
+      console.log(a, b, c);
+      // var data = new FormData();
+      // data.append( "json", JSON.stringify( payload ) );
+
+      fetch('http://localhost:5000/create_links', {
+        method: 'POST',
+        // headers: {
+        //   'Access-Control-Allow-Origin': '*'
+        // },
+        body: JSON.stringify({ id_user: a, count_links: b, count: c }),
+      })
+        .then((r) => {
+          r.json().then((data) => {
+
+            dataDow == data;
+            const inner = data.map((d) => `<a href=${d.Link}>${d.Link}</a>`);
+            document.getElementById('qw').innerHTML = inner.join('<br/>');
+            document.getElementById('5').addEventListener('click', () => {
+              const element = document.createElement('a');
+              const textFile = new Blob([JSON.stringify(dataDow)], {
+                type: 'json/aplication',
+              });
+              element.href = URL.createObjectURL(textFile);
+              element.download = 'data.json';
+              document.body.appendChild(element);
+              element.click();
             });
-          })
-          .catch((err) => {
-            document.getElementById('qw').innerHTML = 'some error';
           });
-      });
-      document.getElementById('qw').innerHTML = 'Hello JavaScript!';
-    </script>
-  </body>
+        })
+        .catch((err) => {
+          document.getElementById('qw').innerHTML = 'some error';
+        });
+    });
+    document.getElementById('qw').innerHTML = 'Hello JavaScript!';
+  </script>
+</body>
+
 </html>
