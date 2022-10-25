@@ -1,76 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        width: 20%;
+        margin: 0 auto;
+        text-align: center;
+        margin-top: 3vh;
+        background-color: #7fcbd8;
+      }
+      input {
+        border: 1px solid #7fcbd8;
+        border-radius: 20px;
+      }
+      a {
+        color: white;
+        text-decoration: none;
+        margin-top: 3vh;
+      }
+      a:hover {
+        opacity: 0.7;
+      }
+      button {
+        margin-top: 3vh;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <style>
-    a {
-      color:green;
-      text-decoration: none;
-    }
-  </style>
-</head>
+      .data {
+        background-color: rgb(46, 44, 44);
+        margin: 3vh;
+        padding: 3vh;
+      }
+    </style>
+  </head>
 
-<body>
-  <label for="fname">user_id:</label>
-  <input id="1" type="text" />
-  <br />
-  <label for="fname">amount:</label>
-  <input id="2" type="text" />
-  <br />
-  <label for="fname">count_links:</label>
-  <input id="3" type="text" />
-  <br />
-  <button type="button" id="4">send</button>
-  <div id="qw"></div>
-  <button type="button" id="5">download</button>
-  <script>
-    let dataDow;
+  <body>
+    <h1>fix pay</h1>
+    <label for="fname">user_id:</label>
+    <input id="1" type="text" />
+    <br />
+    <label for="fname">amount:</label>
+    <input id="2" type="text" />
+    <br />
+    <label for="fname">count_links:</label>
+    <input id="3" type="text" />
+    <br />
+    <button type="button" id="4">send</button>
+    <div id="qw"></div>
+    <div id="addBtn"></div>
 
+    <script>
+      let dataDow;
 
-    document.getElementById('4').addEventListener('click', () => {
-      const a = document.getElementById('1').value;
-      const b = document.getElementById('2').value;
-      const c = document.getElementById('3').value;
+      document.getElementById('4').addEventListener('click', () => {
+        const a = document.getElementById('1').value;
+        const b = document.getElementById('2').value;
+        const c = document.getElementById('3').value;
 
-      console.log(a, b, c);
-      // var data = new FormData();
-      // data.append( "json", JSON.stringify( payload ) );
+        document.getElementById('addBtn').innerHTML = 'add params';
+        if (!a || !b || !c) return;
+        document.getElementById('addBtn').innerHTML = 'loading';
 
-      fetch('http://localhost:5000/create_links', {
-        method: 'POST',
-        // headers: {
-        //   'Access-Control-Allow-Origin': '*'
-        // },
-        body: JSON.stringify({ id_user: a, count_links: b, count: c }),
-      })
-        .then((r) => {
-          r.json().then((data) => {
+        console.log(a, b, c);
+        // var data = new FormData();
+        // data.append( "json", JSON.stringify( payload ) );
 
-            dataDow == data;
-            const inner = data.map((d) => `<a href=${d.Link}>${d.Link}</a>`);
-            document.getElementById('qw').innerHTML = inner.join('<br/>');
-            document.getElementById('5').addEventListener('click', () => {
-              const element = document.createElement('a');
-              const textFile = new Blob([JSON.stringify(dataDow)], {
-                type: 'json/aplication',
-              });
-              element.href = URL.createObjectURL(textFile);
-              element.download = 'data.json';
-              document.body.appendChild(element);
-              element.click();
-            });
-          });
+        // const data = [
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        //   { Link: 'https://www.google.com' },
+        // ];
+
+        fetch('http://localhost:5000/create_links', {
+          method: 'POST',
+          // headers: {
+          //   'Access-Control-Allow-Origin': '*'
+          // },
+          body: JSON.stringify({ id_user: a, count_links: b, count: c }),
         })
-        .catch((err) => {
-          document.getElementById('qw').innerHTML = 'some error';
-        });
-    });
-    document.getElementById('qw').innerHTML = 'Hello JavaScript!';
-  </script>
-</body>
+          .then((r) => {
+            r.json().then((data) => {
+              dataDow == data;
+              const inner = data.map((d) => `<a href=${d.Link}>${d.Link}</a>`);
+              document.getElementById('qw').innerHTML = `<div class='data'>${inner.join('<br/>')}</div>`;
+              document.getElementById('addBtn').innerHTML = ' <button type="button" id="5">download</button>';
 
+              document.getElementById('5').addEventListener('click', () => {
+                const element = document.createElement('a');
+                const textFile = new Blob([JSON.stringify(dataDow)], {
+                  type: 'json/aplication',
+                });
+                element.href = URL.createObjectURL(textFile);
+                element.download = 'data.json';
+                document.body.appendChild(element);
+                element.click();
+              });
+              document.getElementById('addBtn').innerHTML = 'loading';
+            });
+          })
+          .catch((err) => {
+            document.getElementById('qw').innerHTML = `<div class='data'>some error</div>`;
+            document.getElementById('addBtn').innerHTML = '';
+          });
+      });
+    </script>
+  </body>
 </html>
