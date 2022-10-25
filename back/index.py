@@ -7,9 +7,13 @@ from flask_cors import CORS
 
 
 
-
 app = Flask(__name__)
 CORS(app)
+
+from pymongo import MongoClient
+client = MongoClient("mongodb://127.0.0.1:27017")
+print("Connection Successful")
+client.close()
 
 @app.route('/' , methods=['GET'])
 def home():
