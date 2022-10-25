@@ -8,8 +8,11 @@
   </head>
   <body>
     <input id="1" type="text" />
+    <label for="fname">user_id:</label><br>
     <input id="2" type="text" />
+    <label for="fname">amount:</label><br>
     <input id="3" type="text" />
+    <label for="fname">count_links:</label><br>
     <button type="button" id="4">send</button>
     <div id="qw"></div>
     <script>
@@ -19,23 +22,21 @@
         const c = document.getElementById('3').value;
 
         console.log(a, b, c);
-        var payload = {
-          "id_user": 3,
-          "count_links": 4,
-          "count": 3
-        };
-        var data = new FormData();
-        data.append( "json", JSON.stringify( payload ) );
+        // var data = new FormData();
+        // data.append( "json", JSON.stringify( payload ) );
 
-        fetch(`http://localhost:5000/create_links`,{
+        fetch('http://localhost:5000/create_links',{
           method: "POST",
-          body: JSON.stringify({id_user: 7, count_links: 3, count: 3})
+          // headers: {
+          //   'Access-Control-Allow-Origin': '*'
+          // },
+          body: JSON.stringify({id_user: a, count_links: b, count: c})
         }).then((r) => {
-          if (r.ok) {
-            document.getElementById('qw').innerHTML = JSON.stringify(r);
-          } else {
-            document.getElementById('qw').innerHTML = 'some error';
-          }
+            r.json().then((data)=>{
+              document.getElementById('qw').innerHTML = JSON.stringify(data);
+            })
+        }).catch((err) => {
+            document.getElementById('qw').innerHTML = 'some error'; 
         });
       });
       document.getElementById('qw').innerHTML = 'Hello JavaScript!';
