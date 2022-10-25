@@ -32,6 +32,7 @@
       }
 
       .data {
+        width: 80vw;
         background-color: rgb(46, 44, 44);
         margin: 3vh;
         padding: 3vh;
@@ -110,7 +111,7 @@
             });
           })
           .catch((err) => {
-            document.getElementById('qw').innerHTML = `<div class='data'>some error</div>`;
+            document.getElementById('qw').innerHTML = `<div class='data' style={{color:white;}}>some error</div>`;
             document.getElementById('addBtn').innerHTML = '';
           });
       });
