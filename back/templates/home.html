@@ -35,6 +35,13 @@
         background-color: rgb(46, 44, 44);
         margin: 3vh;
         padding: 3vh;
+        width: 400%;
+        width: auto ;
+
+        /* padding-left: 3px; */
+      }
+      #down {
+        padding-left: 0px;
       }
     </style>
   </head>
@@ -67,42 +74,26 @@
         document.getElementById('addBtn').innerHTML = 'loading';
 
         console.log(a, b, c);
-        // var data = new FormData();
-        // data.append( "json", JSON.stringify( payload ) );
-
-        // const data = [
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        //   { Link: 'https://www.google.com' },
-        // ];
+       
 
         fetch('http://localhost:5000/create_links', {
           method: 'POST',
-          // headers: {
-          //   'Access-Control-Allow-Origin': '*'
-          // },
           body: JSON.stringify({ id_user: a, count_links: b, count: c }),
         })
           .then((r) => {
             r.json().then((data) => {
               dataDow == data;
               const inner = data.map((d) => `<a href=${d.Link}>${d.Link}</a>`);
+              document.getElementById('addBtn').innerHTML = ' <button  type="button" id="5">download</button>';
               document.getElementById('qw').innerHTML = `<div class='data'>${inner.join('<br/>')}</div>`;
-              document.getElementById('addBtn').innerHTML = ' <button type="button" id="5">download</button>';
 
-              document.getElementById('5').addEventListener('click', () => {
+              document.getElementById('down').addEventListener('click', () => {
                 const element = document.createElement('a');
                 const textFile = new Blob([JSON.stringify(dataDow)], {
                   type: 'json/aplication',
                 });
-                element.href = URL.createObjectURL(textFile);
                 element.download = 'data.json';
+                element.href = URL.createObjectURL(textFile);
                 document.body.appendChild(element);
                 element.click();
               });

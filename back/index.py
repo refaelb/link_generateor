@@ -4,6 +4,7 @@ import os
 import requests
 from flask import render_template
 from flask_cors import CORS
+import pymongo
 
 
 
@@ -57,4 +58,13 @@ def api_createor(count, count_links, id_user):
     print(response.content)
     json_data=json.loads(response.content)
     links=json_data['Data']
-    return links
+    # return links
+    return write_to_mongo(count, count_links, id_user, links)
+
+def write_to_mongo(count, count_links, id_user,links):
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient["mydatabase"]
+    mycol = mydb["links"]
+    mydict = { "name": id_user, "links": links , "count_orders": 3, "amount": count}
+
+    x = mycol.insert_one(mydict)
