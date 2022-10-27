@@ -7,13 +7,15 @@
     <title>Document</title>
     <style>
       body {
-        background-color: #7fcbd8;
+        /* background-color: #7fcbd8; */
+        background-image: url("/../static/styles/bit8.jpg");
       }
       .main {
         display: flex;
+        color: aliceblue;
         flex-direction: column;
-        width: 20%;
-        margin: 0 auto;
+        width: 25%;
+        margin: 0  auto ;
         text-align: center;
         margin-top: 3vh;
       }
@@ -40,6 +42,10 @@
         margin: 3vh auto;
         width: 100%;
       }
+      .in {
+        color: white;
+        font-size: 180%;
+      }
 
       .data {
         width: 70vw;
@@ -56,14 +62,14 @@
   <body>
     <div class="main">
       <h1>fix pay</h1>
-      <label for="fname">token_user:</label>
-      <input id="1" type="text" />
+      <label class="in" for="fname">token_user:</label>
+      <input id="1"  type="number" />
       <br />
-      <label for="fname">amount:</label>
-      <input id="2" type="text" />
+      <label class="in" for="fname">amount:</label>
+      <input id="2"  type="number" />
       <br />
-      <label for="fname">count_links:</label>
-      <input id="3" type="text" />
+      <label class="in" for="fname">count_links:</label>
+      <input id="3"  type="number" />
       <br />
       <button type="button" id="4">send</button>
     </div>
@@ -80,8 +86,8 @@
 
         document.getElementById('addBtn').innerHTML = 'add params';
         if (!token_user || !amount || !count_links) return;
-        // document.getElementById('addBtn').innerHTML = 'loading';
-
+        document.getElementById('addBtn').innerHTML = 'loading';
+        
         console.log(token_user, amount, count_links);
         // var data = new FormData();
         // data.append('json', JSON.stringify(payload));
@@ -99,18 +105,17 @@
               
               document.getElementById('addBtn').innerHTML = ' <button type="button" id="5">download</button>';
               document.getElementById('5').addEventListener('click', () => {
+                  const element = document.createElement('a');
 
-                const printToFile = (dataDow) => {
-                const element = document.createElement('a');
-                const textFile = new Blob([JSON.stringify(dataDow)], {
-                  type: 'json/aplication',
-                });
-                document.getElementById('addBtn').innerHTML = 'loading';
-                element.href = URL.createObjectURL(textFile);
-                element.download = 'data.json';
-                document.body.appendChild(element);
-                element.click();
-                }
+                  const textFile = new Blob([JSON.stringify(dataDow)], {
+                    type: 'json/aplication',
+                  });
+                  element.href = URL.createObjectURL(textFile);
+                  element.download = 'data.json';
+                  document.body.appendChild(element);
+                  element.click();
+                  // }
+                
                   });
             });
           })

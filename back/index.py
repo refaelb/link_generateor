@@ -45,16 +45,13 @@ def read_from_mongo(token_user, amount, count_links):
     # mydoc = mycol.find().sort(token_user, -1).limit(1)
     # # print (mydoc)
     # count_orders=mydoc["count_orders"]
-    mydoc = mycol.find().sort("count_orders", -1)
-    # print (mydoc["name"])
-    for x in mydoc:
-    #   print(x["name"])
-        if x["name"] == token_user:
-            count_orders=x["count_orders"]
-            print (count_orders)
-            break
-        else:
-            count_orders=0
+    mydoc = mycol.find({"name":token_user}).sort("count_orders", -1).limit(1)
+    # print ('123 ' + mydoc["name"])
+    
+    if mydoc[0]:
+        count_orders=mydoc[0]["count_orders"]
+    else :
+        count_orders=0
     print (count_orders)
     count_orders=count_orders+1
     out = []
