@@ -62,8 +62,8 @@
   <body>
     <div class="main">
       <h1>fix pay</h1>
-      <label class="in" for="fname">token_user:</label>
-      <input id="1"  type="number" />
+      <label class="in" for="fname">user_name:</label>
+      <input id="1"  type="text" />
       <br />
       <label class="in" for="fname">amount:</label>
       <input id="2"  type="number" />
@@ -80,27 +80,28 @@
       let dataDow;
 
       document.getElementById('4').addEventListener('click', () => {
-        const token_user = document.getElementById('1').value;
+        const user_name = document.getElementById('1').value;
         const amount = document.getElementById('2').value;
         const count_links = document.getElementById('3').value;
 
         document.getElementById('addBtn').innerHTML = 'add params';
-        if (!token_user || !amount || !count_links) return;
+        if (!user_name || !amount || !count_links) return;
         document.getElementById('addBtn').innerHTML = 'loading';
         
-        console.log(token_user, amount, count_links);
+        console.log(user_name, amount, count_links);
         // var data = new FormData();
         // data.append('json', JSON.stringify(payload));
 
 
-        fetch('http://localhost:5000/create_links', {
+        fetch('/create_links', {
           method: 'POST',
-          body: JSON.stringify({ token_user: token_user, amount: amount, count_links: count_links }),
+          body: JSON.stringify({ user_name: user_name, amount: amount, count_links: count_links }),
         })
           .then((r) => {
             r.json().then((data) => {
               dataDow == data;
               const inner = data.map((d) => `<a href=${d.Link}>${d.Link}</a>`);
+              console.log(data);
               document.getElementById('qw').innerHTML = `<div class='data'>${inner.join('<br/>')}</div>`;
               
               document.getElementById('addBtn').innerHTML = ' <button type="button" id="5">download</button>';

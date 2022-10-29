@@ -22,55 +22,67 @@ def home():
 @app.route('/create_links', methods=['POST'])
 def pipline_api():
     data = (request.data)
-    print (data)
-    a = validate(data)
-    return a
-
+    # a = validate(data)
+    return validate(data)
 
 
 def validate(data):
     json_data=json.loads(data)
     print (json_data)
-    token_user = int(json_data["token_user"])
+    user_name = str(json_data["user_name"])
     amount = int(json_data["amount"])
     count_links = int(json_data["count_links"])
-    
-    return read_from_mongo(token_user, amount, count_links)
+    return(checker(user_name, amount, count_links))
 
-def read_from_mongo(token_user, amount, count_links):
+def checker(user_name, amount, count_links):
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["mydatabase"]
-    mycol = mydb["links"]
-    myquery = { "name": token_user }
-    # mydoc = mycol.find().sort(token_user, -1).limit(1)
-    # # print (mydoc)
-    # count_orders=mydoc["count_orders"]
-    mydoc = mycol.find({"name":token_user}).sort("count_orders", -1).limit(1)
-    # print ('123 ' + mydoc["name"])
-    
-    if mydoc[0]:
-        count_orders=mydoc[0]["count_orders"]
-    else :
-        count_orders=0
-    print (count_orders)
-    count_orders=count_orders+1
+    mydb = myclient["fixpay"]
+    mycol = mydb["fixpay_users"]
+    mydoc = mycol.find({},{"user_name":1, "_id":0})
+    names=[]
+    for i in mydoc:
+        names.append(i["user_name"])
+    user_name = str(user_name)
+    print(names)
+    if user_name in names:
+        return read_from_mongo(user_name, amount, count_links)
+    else:
+        user_name=str(user_name)
+        out=[{'Link': f'{user_name} not found plise check your user name and try again'}]
+        print (out)
+        return out
+
+
+def read_from_mongo(user_name, amount, count_links):
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient["fixpay"]
+    mycol = mydb["fixpay_users"]
+    myquery = { "user_name": user_name }
+    mydoc=mycol.find(myquery)
+    for x in mydoc:
+        print (x['user_name'])
+        print (x['count_orders'])
+        count_orders=x['count_orders']
+        user_id=x['user_id']
+        count_orders=count_orders+1
+        user_order=int(user_id)+(count_orders)
+
     out = []
     for i in range (count_links):
-        out.append(api_createor(token_user, amount, count_links))
+        out.append(api_createor(user_id, user_order, amount, count_links))
     print (out)
-    write_to_mongo(token_user, amount, count_links, out, count_orders)
+    write_to_mongo(user_name, user_id, amount, count_links, out, count_orders)
     return (out)
 
 
-
-def api_createor(token_user, amount, count_links):
+def api_createor(user_id,user_order, amount, count_links):
     url = "https://stoplight.io/mocks/coinpay/api-2-0/59787578/api/integration/link/createLink/v1"
 
     payload = json.dumps({
     "CurrencyCode": "BTC",
     "IdCurrencyPay": 6,
     "Amount": amount,
-    "IdReference": token_user,
+    "IdReference": user_order,
     "Address": "1AkfP72SZiM1zxwkk5GttXrLi7mmTAmFmk"
     })
     headers = {
@@ -81,20 +93,24 @@ def api_createor(token_user, amount, count_links):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    print(response.content)
     json_data=json.loads(response.content)
     links=json_data['Data']
     return links
 
-def write_to_mongo(token_user, amount, count_links,links, count_orders):
+def write_to_mongo(user_name, user_id, amount, count_links,links, count_orders):
     dt = datetime.now()
     ts = datetime.timestamp(dt)
     print("Date and time is:", dt)
 
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["mydatabase"]
+    myclient = pymongo.MongoClient("mongodb://127.0.0.1:27017/")
+    mydb = myclient["fixpay"]
     mycol = mydb["links"]
-    mydict = { "name": token_user, "links": links , "count_orders": count_orders, "amount": amount, "time": dt }
-
+    mydict = { "user_name": user_name, "user_id": user_id, "links": links , "count_orders": count_orders, "amount": amount, "time": dt }
     x = mycol.insert_one(mydict)
+
+    mycol = mydb["fixpay_users"]
+    mycol.update_one({'user_name':user_name}, {"$set": {"count_orders":count_orders}}, upsert=False)
     return(links)
+# 
+# if __name__ == '__main__':
+# app.run()
